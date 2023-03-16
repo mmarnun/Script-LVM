@@ -1,0 +1,41 @@
+#!/bin/bash
+# Libreria de funciones para el script LV20G.sh 
+### Variables ###
+bold="\e[1m"
+rojo="\e[31m"
+naranja="\e[33m"
+cian="\e[36m"
+reset="\e[0m"
+
+### Funciones ###
+### DURANTE DESARROLLO; HACED FICHEROS APARTE CON VUESTRAS FUNCIONES, NO ESCRIBAIS AQUÍ ###
+### llamad las variables de colores poniendo  ". funciones" en el fichero de vuestra función ###
+
+#1. Comprobar root
+#   si no es root, envía un mensaje de error diciendo que se ejecute como root
+
+#2. Internet
+#   comprueba internet
+#   mensaje de error: comprueba tu conexión a internet
+
+#3. Instalación paquetes
+#   Primero actualizar repositorios
+#   Comprobar si no están los paquetes y en ese caso instalarlos.
+#   paquetes: lvm2, mkfs, sgdisk
+
+#4. Comprobar que discos se van a utilizar para el vg
+#   Buscar discos vacío (4 discos de 5GB) y guardarlos variables d1 d2 d3 d4.
+#   Avisar al usuario de los discos utilizados
+#   Salir del programa en caso de no tener 4 discos como se especifica.
+
+#5. crear vg
+#   crear vg de nombre "vg01-script"
+#   añadir los discos seleccionados al grupo vg01 
+
+#6. crear LV
+#   Comprobar si hay tamaño suficiente, 
+#   si no lo hay salir del programa sin hacer nada.
+#   si lo hay, crear LV de 20GB sobre "vg01-script" llamado "lv20gb"
+
+#7. asignar sistema de ficheros al LV
+#   ext4
