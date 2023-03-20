@@ -13,6 +13,19 @@ reset="\e[0m"
 
 #1. Comprobar root
 #   si no es root, envía un mensaje de error diciendo que se ejecute como root
+#! /bin/bash
+#Autor: Mario Zayas García
+#Descripcion: Esta funcion comprobará si el usuario tiene permisos de root 
+#para poder ejecutar el script principalo sino los tiene le dará un error
+function f_comprobarroot
+if [[ $USER != "root" ]]; then
+   echo "Este script debe ser ejecutado como root" 
+   exit 1
+fi
+f_comprobarroot
+# Si eres root, continua el programa aquí
+echo "El script se está ejecutando como root"
+
 
 #2. Internet
 #   comprueba internet
