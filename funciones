@@ -27,7 +27,18 @@ reset="\e[0m"
 #   Buscar discos vacío (4 discos de 5GB) y guardarlos variables d1 d2 d3 d4.
 #   Avisar al usuario de los discos utilizados
 #   Salir del programa en caso de no tener 4 discos como se especifica.
-
+function f_comprobar_part {
+  j=1
+  for i in $(lsblk -n -d -o NAME); do
+    if [ "$(lsblk -o NAME,TYPE | awk '$2=="part"{print $1}' | egrep -o "$i")" =>
+      echo "$i vacio"
+      eval disco$j=$i
+      j=$((j+1))
+    else
+      echo "$i usado"
+    fi
+  done
+}
 #5. crear vg
 #   crear vg de nombre "vg01-script"
 #   añadir los discos seleccionados al grupo vg01 
