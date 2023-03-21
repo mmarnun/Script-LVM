@@ -31,7 +31,21 @@ reset="\e[0m"
 #5. crear vg
 #   crear vg de nombre "vg01-script"
 #   añadir los discos seleccionados al grupo vg01 
-
+function f_crearvg {
+  # Crear particiones en los discos (usando sfdisk)
+  for disco in $disco1 $disco2; do
+    echo "Creando partición en $disco"
+    echo "label: dos" | sudo sfdisk $disco >> /dev/null
+    echo ",,8e," | sudo sfdisk $disco >> /dev/null
+    sudo partprobe $disco >> /dev/null
+  done
+  
+  # Crear el VG
+  sudo vgcreate vg01 $disco1"1" $disco2"1" >> /dev/null
+  echo "Creando el grupo de volumenes."
+  # Mostrar información del VG
+  sudo vgdisplay vg01
+}
 #6. crear LV
 #   Comprobar si hay tamaño suficiente, 
 #   si no lo hay salir del programa sin hacer nada.
