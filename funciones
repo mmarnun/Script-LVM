@@ -30,16 +30,54 @@ echo "El script se está ejecutando como root"
 #2. Internet
 #   comprueba internet
 #   mensaje de error: comprueba tu conexión a internet
+# comprueba internet haciendo ping 8.8.8.8
+# mensaje de error: comprueba tu conexión a internet
+
+function f_conexion {
+        if ping -c 1 -q 8.8.8.8 > /dev/null; then
+        echo “Tienes conexión a Internet”
+        return 0
+        else
+        echo “Comprueba tu conexión”
+        return 1
+        fi
+}
 
 #3. Instalación paquetes
 #   Primero actualizar repositorios
 #   Comprobar si no están los paquetes y en ese caso instalarlos.
 #   paquetes: lvm2, mkfs, sgdisk
 
+function f_existe_paquete {
+if sudo which $comando;then 
+echo "El comando $comando se encuentra en el sistema"
+return 0
+else
+echo "El comando $comando nonse encuentra en el sistema" 
+return 1
+fi
+}
+
+
 #4. Comprobar que discos se van a utilizar para el vg
 #   Buscar discos vacío (4 discos de 5GB) y guardarlos variables d1 d2 d3 d4.
 #   Avisar al usuario de los discos utilizados
 #   Salir del programa en caso de no tener 4 discos como se especifica.
+#Tiene = 1
+#No Tiene = 0
+
+function f_comprobar_part {
+j=1
+  for i in $(lsblk -n -d -o NAME); do
+    if [ "$(lsblk -o NAME,TYPE | awk '$2=="part"{print $1}' | egrep -o "$i")" = "" ]; then
+      eval disco$j="\/dev\/$i"
+      j=$((j+1))
+      return 0
+    else
+      return 1
+    fi
+  done
+}
 
 #5. crear vg
 #   crear vg de nombre "vg01-script"
@@ -49,6 +87,22 @@ echo "El script se está ejecutando como root"
 #   Comprobar si hay tamaño suficiente, 
 #   si no lo hay salir del programa sin hacer nada.
 #   si lo hay, crear LV de 20GB sobre "vg01-script" llamado "lv20gb"
+
+#Autor: Juan Carlos Martín Muñoz
+#Descripción: Comprueba si hay tamaño suficiente en el grupo de volumenes (vg01), si no lo hay saldra del programa sin hacer nada. Si lo hay, creara un LV de 20GB
+
+VG_NAME=vg01-script
+LV_SIZE=20G
+VG_FREE=$(vgdisplay -c $VG_NAME | cut -d ":" -f 16)
+
+if [ $LV_SIZE -lt $VG_FREE ]; then
+  lvcreate -L $LV_SIZE -n mylv $VG_NAME
+	Return 0
+else
+  echo "No hay suficiente espacio libre en el grupo de volumenes. Saliendo del script."
+  return 1
+	exit 1
+fi
 
 #7. asignar sistema de ficheros al LV
 #   ext4
